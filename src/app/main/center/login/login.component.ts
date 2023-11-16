@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
-import { CoreConfigService } from '../../../../@core/services/config.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { AuthenticationService } from '../../../auth/service/authentication.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Validators, FormBuilder, FormGroup} from '@angular/forms';
+import {first, takeUntil} from 'rxjs/operators';
+import {CoreConfigService} from '../../../../@core/services/config.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Subject} from 'rxjs';
+import {AuthenticationService} from '../../../auth/service/authentication.service';
+import {ToastrService} from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   //  Public
   public coreConfig: any;
   public loginForm: FormGroup;
@@ -30,12 +31,12 @@ export class LoginComponent implements OnInit {
   // Private
   private _unsubscribeAll: Subject<any>;
 
-  /**
-   * Constructor
-   *
-   * @param {CoreConfigService} _coreConfigService
-   */
+  private users = [
+    {email: 'prueba@gmail.com', password: '1234'}
+  ];
+
   constructor(
+    private _toastrService: ToastrService,
     private _coreConfigService: CoreConfigService,
     private _formBuilder: FormBuilder,
     private _route: ActivatedRoute,
@@ -87,20 +88,30 @@ export class LoginComponent implements OnInit {
 
     // Login
     this.loading = true;
-    this._authenticationService
-      .login(this.f.email.value, this.f.password.value)
-      .pipe(first())
-      .subscribe(
-        data => {
-          console.log(this.returnUrl);
-          this._router.navigate([this.returnUrl]);
-        },
-        error => {
-        
-          this.error = "Fallo en la autenticación, vuelva a intentarlo";
-          this.loading = false;
-        }
-      );
+    const usuario = {email: this.f.email.value, password: this.f.password.value};
+    const isUserEqual = (user1, user2) => {
+      return user1.email === user2.email && user1.password === user2.password;
+    };
+    const foundUser = this.users.find(user => isUserEqual(user, usuario));
+    if (foundUser) {
+      this._router.navigate([this.returnUrl]);
+    } else {
+      this._toastrService.error('No tiene acceso');
+      this.loading = false;
+    }
+    // this._authenticationService
+    //   .login(this.f.email.value, this.f.password.value)
+    //   .pipe(first())
+    //   .subscribe(
+    //     data => {
+    //       console.log(this.returnUrl);
+    //       this._router.navigate([this.returnUrl]);
+    //     },
+    //     error => {
+    //       this.error = "Fallo en la autenticación, vuelva a intentarlo";
+    //       this.loading = false;
+    //     }
+    //   );
   }
 
   // Lifecycle Hooks
@@ -124,9 +135,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  /**
-   * On destroy
-   */
   ngOnDestroy(): void {
     // Unsubscribe from all subscriptions
     this._unsubscribeAll.next();
