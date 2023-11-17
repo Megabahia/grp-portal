@@ -3,7 +3,7 @@ name: Despliegue en el Servidor
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
