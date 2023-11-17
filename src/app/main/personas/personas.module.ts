@@ -18,8 +18,8 @@ const routes = [
   {
     path: 'inicio',
     component: PrincipalComponent,
-    // data: { roles: [Role.SuperMonedas] },
-    // canActivate: [AuthGuard]
+    data: { roles: [Role.SuperMonedas] },
+    canActivate: [AuthGuard]
     // data: { animation: 'auth' }
   },
 ];

@@ -31,10 +31,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   // Private
   private _unsubscribeAll: Subject<any>;
 
-  private users = [
-    {email: 'prueba@gmail.com', password: '1234'}
-  ];
-
   constructor(
     private _toastrService: ToastrService,
     private _coreConfigService: CoreConfigService,
@@ -88,30 +84,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     // Login
     this.loading = true;
-    const usuario = {email: this.f.email.value, password: this.f.password.value};
-    const isUserEqual = (user1, user2) => {
-      return user1.email === user2.email && user1.password === user2.password;
-    };
-    const foundUser = this.users.find(user => isUserEqual(user, usuario));
-    if (foundUser) {
-      this._router.navigate([this.returnUrl]);
-    } else {
-      this._toastrService.error('No tiene acceso');
-      this.loading = false;
-    }
-    // this._authenticationService
-    //   .login(this.f.email.value, this.f.password.value)
-    //   .pipe(first())
-    //   .subscribe(
-    //     data => {
-    //       console.log(this.returnUrl);
-    //       this._router.navigate([this.returnUrl]);
-    //     },
-    //     error => {
-    //       this.error = "Fallo en la autenticación, vuelva a intentarlo";
-    //       this.loading = false;
-    //     }
-    //   );
+    this._authenticationService
+      .login(this.f.email.value, this.f.password.value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log(this.returnUrl);
+          this._router.navigate([this.returnUrl]);
+        },
+        error => {
+
+          this.error = 'Fallo en la autenticación, vuelva a intentarlo';
+          this.loading = false;
+        }
+      );
   }
 
   // Lifecycle Hooks
