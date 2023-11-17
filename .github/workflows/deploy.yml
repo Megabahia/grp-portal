@@ -10,11 +10,16 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Use Node.js 16
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+
       - name: Checkout del código
         uses: actions/checkout@v2
 
       - name: Despliegue en el servidor
         run: |
-          ssh sysadmin@209.145.61.41 'cd /var/www/html/grp-portal && sudo git pull origin master && '
+          ssh sysadmin@209.145.61.41 'cd /var/www/html/grp-portal && git pull origin master && ng build --prod '
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
