@@ -20,9 +20,9 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ${{ secrets.WORK_DIR }}
-          sudo git fetch
-          sudo git checkout ${{ secrets.MAIN_BRANCH }}
-          sudo git pull
-          sudo npm install
-          sudo npm run build
+          git fetch
+          git checkout ${{ secrets.MAIN_BRANCH }}
+          git pull
+          npm install
+          npm run build
           exit
