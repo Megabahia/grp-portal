@@ -12,4 +12,5 @@ export class User {
   token?: string;
   estado: string;
   tokenExpiracion: string;
+  perfil?: string;
 }

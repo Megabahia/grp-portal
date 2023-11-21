@@ -2,7 +2,15 @@
     <!-- users list start -->
     <div class="content-body">
         <div class="text-center container">
-            <a href="https://bigpuntos.com/">Visita esta pagina</a>
+            <div class="">
+                <img src="assets/images/logo/todomegacentro.png" >
+            </div>
+            <div *ngIf="usuario?.perfil === 'Vendedor' ; else administrador">
+                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/">Ingresa a la pagina</a>
+            </div>
+            <ng-template #administrador>
+                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/admin">Ingresa a la pagina</a>
+            </ng-template>
         </div>
     </div>
     <!-- users list ends -->
