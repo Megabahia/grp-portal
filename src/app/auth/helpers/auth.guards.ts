@@ -30,7 +30,7 @@ export class AuthGuard implements CanActivate {
       // console.log(fechaActual.diff());
 
       grpCreditUser.roles.map(rol => {
-        if (route.data.roles && route.data.roles.indexOf(rol.nombre) != -1) {
+        if (route.data.roles && route.data.roles.indexOf(rol.nombre) !== -1) {
           rolEncontrado = true;
         }
       });
