@@ -3,13 +3,14 @@
     <div class="content-body">
         <div class="text-center container">
             <div class="">
-                <img src="assets/images/logo/todomegacentro.png" >
+                <img src="assets/images/logo/todomegacentro.png">
             </div>
             <div *ngIf="usuario?.perfil === 'Vendedor' ; else administrador">
-                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/">Ingresa a la pagina</a>
+                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/">Ingresa a la página del catálogo</a>
             </div>
             <ng-template #administrador>
-                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/admin">Ingresa a la pagina</a>
+                <a class="btn btn-primary mt-2" href="https://todomegacentro.com/admin">Ingresa a la página como
+                    administrador</a>
             </ng-template>
         </div>
     </div>
