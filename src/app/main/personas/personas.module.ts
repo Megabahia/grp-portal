@@ -18,7 +18,7 @@ const routes = [
   {
     path: 'inicio',
     component: PrincipalComponent,
-    data: { roles: [Role.SuperMonedas] },
+    data: { roles: [Role.Bigpuntos] },
     canActivate: [AuthGuard]
     // data: { animation: 'auth' }
   },

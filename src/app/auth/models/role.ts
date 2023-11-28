@@ -1,5 +1,5 @@
 ﻿export enum Role {
-  SuperMonedas = 'SuperMonedas',
+  Bigpuntos = 'Big Puntos',
   Autonomo = 'Autonomo',
   Empleado = 'Empleado'
 }

@@ -3,7 +3,7 @@ import {Validators, FormBuilder, FormGroup} from '@angular/forms';
 import {first, takeUntil} from 'rxjs/operators';
 import {CoreConfigService} from '../../../../@core/services/config.service';
 import {ActivatedRoute, Router} from '@angular/router';
-import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {Subject} from 'rxjs';
 import {AuthenticationService} from '../../../auth/service/authentication.service';
 import {ToastrService} from 'ngx-toastr';
 
@@ -30,14 +30,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   // Private
   private _unsubscribeAll: Subject<any>;
-  private usuarios = [];
-  public grpCreditUser: Observable<any>;
-  // private
-  private grpCorpUserSubject: BehaviorSubject<any>;
-
-  public get grpCorpUserValue(): any {
-    return this.grpCorpUserSubject.value;
-  }
 
   constructor(
     private _toastrService: ToastrService,
@@ -47,29 +39,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _authenticationService: AuthenticationService
   ) {
-    // this.grpCorpUserSubject = new BehaviorSubject<any>(JSON.parse(localStorage.getItem('grpCreditUser')));
-    // this.grpCreditUser = this.grpCorpUserSubject.asObservable();
-    // const filePath = './assets/usuarios/usuarios.csv';
-    // fetch(filePath)
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error(`No se pudo cargar el archivo ${filePath}`);
-    //     }
-    //     return response.text();
-    //   })
-    //   .then(csvContent => {
-    //     this.usuarios = csvContent.split('\n').map((item) => {
-    //       const fila = item.split(';');
-    //       return {
-    //         email: fila[0],
-    //         password: fila[1],
-    //         roles: [{nombre: fila[2]}],
-    //         perfil: fila[3],
-    //         tokenExpiracion: 0,
-    //       };
-    //     });
-    //   })
-    //   .catch(error => console.error('Error al cargar el archivo:', error));
     this._unsubscribeAll = new Subject();
 
     // Configure the layout
@@ -105,7 +74,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.passwordTextType = !this.passwordTextType;
   }
 
-  async onSubmit() {
+  onSubmit() {
     this.submitted = true;
 
     // stop here if form is invalid
@@ -115,13 +84,20 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     // Login
     this.loading = true;
-    const data = await this._authenticationService
-      .login(this.f.email.value, this.f.password.value);
-    console.log('data', data);
-    if (!data) {
+    this._authenticationService
+      .login(this.f.email.value, this.f.password.value)
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log(this.returnUrl);
+          this._router.navigate([this.returnUrl]);
+        },
+        error => {
+
           this.error = 'Fallo en la autenticación, vuelva a intentarlo';
           this.loading = false;
-    }
+        }
+      );
   }
 
   // Lifecycle Hooks
