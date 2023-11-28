@@ -1,5 +1,5 @@
 ﻿export enum Role {
-  Bigpuntos = 'Big Puntos',
-  Autonomo = 'Autonomo',
-  Empleado = 'Empleado'
+  SuperAdministrador = 'Super Administrador',
+  Administrador = 'Administrador',
+  Vendedor = 'Vendedor'
 }

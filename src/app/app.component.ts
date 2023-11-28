@@ -1,23 +1,24 @@
-import { Component, Inject, OnDestroy, OnInit, ElementRef, Renderer2 } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
-import { Title } from '@angular/platform-browser';
+import {Component, Inject, OnDestroy, OnInit, ElementRef, Renderer2} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {Title} from '@angular/platform-browser';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import {Subject} from 'rxjs';
+import {takeUntil} from 'rxjs/operators';
+import {TranslateService} from '@ngx-translate/core';
 import * as Waves from 'node-waves';
 
-import { CoreMenuService } from '@core/components/core-menu/core-menu.service';
-import { CoreSidebarService } from '@core/components/core-sidebar/core-sidebar.service';
-import { CoreConfigService } from '@core/services/config.service';
-import { CoreLoadingScreenService } from '@core/services/loading-screen.service';
-import { CoreTranslationService } from '@core/services/translation.service';
+import {CoreMenuService} from '@core/components/core-menu/core-menu.service';
+import {CoreSidebarService} from '@core/components/core-sidebar/core-sidebar.service';
+import {CoreConfigService} from '@core/services/config.service';
+import {CoreLoadingScreenService} from '@core/services/loading-screen.service';
+import {CoreTranslationService} from '@core/services/translation.service';
 
-import { menu } from 'app/menu/menu';
-import { locale as menuEnglish } from 'app/menu/i18n/en';
-import { locale as menuFrench } from 'app/menu/i18n/fr';
-import { locale as menuGerman } from 'app/menu/i18n/de';
-import { locale as menuPortuguese } from 'app/menu/i18n/pt';
+import {menu} from 'app/menu/menu';
+import {locale as menuEnglish} from 'app/menu/i18n/en';
+import {locale as menuFrench} from 'app/menu/i18n/fr';
+import {locale as menuGerman} from 'app/menu/i18n/de';
+import {locale as menuPortuguese} from 'app/menu/i18n/pt';
+import {User} from './auth/models';
 
 @Component({
   selector: 'app-root',
@@ -32,21 +33,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Private
   private _unsubscribeAll: Subject<any>;
+  public usuario;
 
-  /**
-   * Constructor
-   *
-   * @param {DOCUMENT} document
-   * @param {Title} _title
-   * @param {Renderer2} _renderer
-   * @param {ElementRef} _elementRef
-   * @param {CoreConfigService} _coreConfigService
-   * @param {CoreSidebarService} _coreSidebarService
-   * @param {CoreLoadingScreenService} _coreLoadingScreenService
-   * @param {CoreMenuService} _coreMenuService
-   * @param {CoreTranslationService} _coreTranslationService
-   * @param {TranslateService} _translateService
-   */
   constructor(
     @Inject(DOCUMENT) private document: any,
     private _title: Title,
@@ -59,8 +47,15 @@ export class AppComponent implements OnInit, OnDestroy {
     private _coreTranslationService: CoreTranslationService,
     private _translateService: TranslateService
   ) {
+    this.usuario = this._coreMenuService.grpCreditUser;
     // Get the application main menu
-    this.menu = menu;
+    this.menu = menu.filter((item) => {
+      if (item.role.includes(this.usuario.roles[0].nombre)) {
+        return true;
+      } else {
+        return false;
+      }
+    });
 
     // Register the menu to the menu service
     this._coreMenuService.register('main', this.menu);

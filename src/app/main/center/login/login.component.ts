@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .subscribe(
         data => {
           console.log(this.returnUrl);
-          this._router.navigate([this.returnUrl]);
+          this._router.navigate(['personas/inicio']);
         },
         error => {
 

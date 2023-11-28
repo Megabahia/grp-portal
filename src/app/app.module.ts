@@ -40,8 +40,12 @@ const appRoutes: Routes = [
 
     },
     {
+        path: 'administrador',
+        loadChildren: () => import('./main/administrador/administrador.module').then(m => m.AdministradorModule),
+    },
+    {
         path: '**',
-        redirectTo: '/pages/miscellaneous/error' //Error 404 - Page not found
+        redirectTo: '/pages/miscellaneous/error'
     },
 
 ];
@@ -59,7 +63,7 @@ const appRoutes: Routes = [
         }),
         TranslateModule.forRoot(),
 
-        //NgBootstrap
+        // NgBootstrap
         NgbModule,
         ToastrModule.forRoot(),
 

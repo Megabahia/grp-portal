@@ -89,6 +89,7 @@ export class AuthenticationService {
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('grpCreditUser');
+    localStorage.clear();
     // notify
     this.grpCorpUserSubject.next(null);
   }

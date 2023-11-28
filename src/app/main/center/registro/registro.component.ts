@@ -89,7 +89,7 @@ export class RegistroComponent implements OnInit {
     this._registroService.registrarUsuario(
       {
         password: this.f.password.value,
-        roles: Role.Bigpuntos,
+        roles: Role.SuperAdministrador,
         email: this.f.correo.value,
         estado: 1
       }

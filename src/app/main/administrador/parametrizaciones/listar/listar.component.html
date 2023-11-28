@@ -1,0 +1,301 @@
+<div class="content-wrapper">
+    <div class="content-header row">
+    </div>
+    <div class="content-body">
+        <!-- users list start -->
+        <section class="app-user-list">
+            <div class="card">
+
+                <div class="row">
+                    <div class="col-5 text-center mx-1">
+                        <label>
+                            Parametro:
+                        </label>
+                        <input
+                                [(ngModel)]="searchValueNombre"
+                                name="searchValueNombre"
+                                type="search"
+                                class="form-control"
+                                (keyup)="filterUpdate($event)"
+                        />
+                    </div>
+                    <div class="col-6 text-center mb-1">
+                        <label>
+                            Descripción:
+                        </label>
+                        <input
+                                [(ngModel)]="searchValueDescripcion"
+                                name="searchValueDescripcion"
+                                type="search"
+                                class="form-control"
+                                (keyup)="filterUpdate($event)"
+                        />
+                    </div>
+                </div>
+            </div>
+            <!-- users filter start -->
+            <!-- <div class="card">
+                <h5 class="card-header">Filtros de búsqueda</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <input class="form-control form-control-sm" type="text" placeholder="Nombre parámetro"
+                                [(ngModel)]="nombreBuscar" (change)="obtenerListaParametros()">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="select2 form-control form-control-sm" [(ngModel)]="tiposOpciones"
+                                (change)="obtenerListaParametros()">
+                                <option value="" selected>- Tipo de parámetro -</option>
+                                <option *ngFor="let tipo of tipos" value="{{tipo.valor}}">{{tipo.valor}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+            <!-- users filter end -->
+            <!-- list section start -->
+            <div class="card">
+
+                <div class="row m-75">
+                    <div class="col-lg-12 col-xl-6">
+                        <label>Mostrar</label>
+                        <select class="form-control-sm" [(ngModel)]="pageSize" (change)="obtenerListaParametros()">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+
+                    </div>
+                    <div class="col-lg-12 col-xl-6 text-right">
+                        <button class="btn btn-success mr-1" tabindex="0" aria-controls="DataTables_Table_0"
+                                type="button" data-toggle="modal" data-target="#modals-slide-in" (click)="exportarExcel()">
+                            Exportar a Excel
+                        </button>
+                        <a (click)="toggleSidebar('guardarParametrizacion','')" class="btn btn-primary">
+                            Añadir Parámetro
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="col-md-12 mb-3" style="margin-top: 10px;">
+                    <ngx-datatable
+
+                        class="material"
+                        style="min-height: 30em; max-height: 30em;"
+
+                        headerHeight="42"
+                        columnMode="force"
+                        footerHeight="50"
+                        [rowHeight]="24"
+                        [rows]="parametros"
+                        [scrollbarV]="true"
+                        [scrollbarH]="true"
+                    >
+                        <ngx-datatable-column name="#" [flexGrow]="0.5">
+                            <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                                {{(rowIndex + 1)}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="PARÁMETRO" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{ row?.nombre | titlecase }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="DESCRIPCIÓN" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row?.descripcion}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="VALOR" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row?.valor}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="TIPO DE DATO" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                {{row?.tipoVariable}}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="ACCIONES" [flexGrow]="2">
+                            <ng-template let-row="row" ngx-datatable-cell-template>
+                                <a href="javascript:void(0);" data-toggle="modal" data-target="#modals-slide-in"
+                                   (click)="toggleSidebar('guardarParametrizacion',row._id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" class="mr-50">
+                                        <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                                        <rect x="1" y="3" width="22" height="5"></rect>
+                                        <line x1="10" y1="12" x2="14" y2="12"></line>
+                                    </svg>
+                                </a>
+                                <a href="javascript:void(0);" (click)="eliminarParametroModal(row._id)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                         stroke-linejoin="round" class="mr-50">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path
+                                                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                        </path>
+                                        <line x1="10" y1="11" x2="10" y2="17"></line>
+                                        <line x1="14" y1="11" x2="14" y2="17"></line>
+                                    </svg>
+                                </a>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+                </div>
+            </div>
+        </section>
+        <!-- users list ends -->
+    </div>
+</div>
+<core-sidebar class="modal modal-slide-in sidebar-todo-modal fade" name="guardarParametrizacion"
+              overlayClass="modal-backdrop">
+    <div class="slideout-content">
+        <div class="modalsd modal-slide-in sdfade new-user-modal" id="modals-slide-in">
+            <div class="modal-dialog">
+                <form class="add-new-user modal-content pt-0" [formGroup]="parametrizacionForm">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            (click)="toggleSidebar('guardarParametrizacion',0)">
+                        ×
+                    </button>
+                    <div class="modal-header mb-1">
+                        <h5 class="modal-title" id="exampleModalLabel">Parametro</h5>
+                    </div>
+                    <div class="modal-body flex-grow-1">
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-fullname">Nombre parámetro:</label>
+                            <input type="text" class="form-control dt-full-name" id="basic-icon-default-fullname"
+                                   name="nombre" formControlName="nombre" [(ngModel)]="parametrizacion.nombre"/>
+                            <div *ngIf="paramSubmitted && paramForm.nombre.errors" class="invalid-feedback"
+                                 style="display: block;">
+                                <div *ngIf="paramForm.nombre.errors.required">Nombre del parámetro es requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-uname">Tipo de parámetro:</label>
+                            <input type="text" class="form-control dt-full-name" id="basic-icon-default-fullname"
+                                   name="tipo" formControlName="tipo" [(ngModel)]="parametrizacion.tipo"/>
+                            <div *ngIf="paramSubmitted && paramForm.tipo.errors" class="invalid-feedback"
+                                 style="display: block;">
+                                <div *ngIf="paramForm.tipo.errors.required">Tipo del parámetro es requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Descripción:</label>
+                            <input type="text" id="basic-icon-default-email" class="form-control dt-email"
+                                   name="descripcion" formControlName="descripcion"
+                                   [(ngModel)]="parametrizacion.descripcion"/>
+                            <div *ngIf="paramSubmitted && paramForm.descripcion.errors" class="invalid-feedback"
+                                 style="display: block;">
+                                <div *ngIf="paramForm.descripcion.errors.required">Descripción del parámetro es
+                                    requerida
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Tipo de variable:</label>
+                            <select class="select2 form-control form-control-sm" name="tipoVariable"
+                                    formControlName="tipoVariable" [(ngModel)]="parametrizacion.tipoVariable">
+                                <option value="" selected>- Tipo de parámetro -</option>
+                                <option value="entero">Entero</option>
+                                <option value="texto">Texto</option>
+                                <option value="booleano">Booleano</option>
+                                <option value="fecha">Fecha</option>
+                            </select>
+                            <div *ngIf="paramSubmitted && paramForm.tipoVariable.errors" class="invalid-feedback"
+                                 style="display: block;">
+                                <div *ngIf="paramForm.tipoVariable.errors.required">Selección del tipo de variable es
+                                    requerida
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Máximo:</label>
+                            <input type="text" id="basic-icon-default-email" class="form-control dt-email" name="maximo"
+                                [(ngModel)]="parametrizacion.maximo" [ngModelOptions]="{standalone: true}" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Mínimo:</label>
+                            <input type="text" id="basic-icon-default-email" class="form-control dt-email" name="minimo"
+                                [(ngModel)]="parametrizacion.minimo" [ngModelOptions]="{standalone: true}" />
+                        </div> -->
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Valor:</label>
+                            <input type="text" id="basic-icon-default-email" class="form-control dt-email" name="valor"
+                                   formControlName="valor" [(ngModel)]="parametrizacion.valor"/>
+                            <div *ngIf="paramSubmitted && paramForm.valor.errors" class="invalid-feedback"
+                                 style="display: block;">
+                                <div *ngIf="paramForm.valor.errors.required">Valor es requerido</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Configuracion:</label>
+                            <input type="text" id="basic-icon-default-email" class="form-control dt-email" name="config"
+                                   formControlName="config" [(ngModel)]="parametrizacion.config"/>
+                            <!--                            <div *ngIf="paramSubmitted && paramForm.valor.errors" class="invalid-feedback"-->
+                            <!--                                 style="display: block;">-->
+                            <!--                                <div *ngIf="paramForm.config.errors.required">  Config es requerido</div>-->
+                            <!--                            </div>-->
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="">Padre:</label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Tipo Padre:</label>
+                            <select class="select2 form-control form-control-sm" name="tipoPadre"
+                                    [(ngModel)]="tipoPadre" (change)="buscarPadre()"
+                                    [ngModelOptions]="{standalone: true}">
+                                <option value="" selected>- Tipo de parámetro -</option>
+                                <option *ngFor="let tipo of tipos" value="{{tipo.valor}}">{{tipo.valor}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="basic-icon-default-email">Padre:</label>
+                            <select class="select2 form-control form-control-sm" name="idPadre"
+                                    [(ngModel)]="parametrizacion.idPadre" [ngModelOptions]="{standalone: true}">
+                                <option value="" selected>- Padre -</option>
+                                <option *ngFor="let padre of padres" [ngValue]="padre._id">{{padre.valor}}</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary mr-1" (click)="guardarParametro()">Guardar</button>
+                        <button (click)="toggleSidebar('guardarParametrizacion','')" class="btn btn-outline-secondary"
+                                data-dismiss="modal">Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</core-sidebar>
+<ng-template #eliminarParametroMdl let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Mensaje</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss( 'Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>Confirma eliminar</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="eliminarParametro()">SI</button>
+    </div>
+</ng-template>
+<ng-template #mensajeModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Mensaje</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss( 'Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div [innerHTML]="mensaje"></div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-light" (click)="cerrarModal()">Cerrar</button>
+    </div>
+</ng-template>
