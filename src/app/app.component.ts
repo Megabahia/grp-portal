@@ -49,13 +49,17 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {
     this.usuario = this._coreMenuService.grpCreditUser;
     // Get the application main menu
-    this.menu = menu.filter((item) => {
-      if (item.role.includes(this.usuario.roles[0].nombre)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    if (this.usuario) {
+      this.menu = menu.filter((item) => {
+        if (item.role.includes(this.usuario?.roles[0].nombre)) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+    } else {
+      this.menu = menu;
+    }
 
     // Register the menu to the menu service
     this._coreMenuService.register('main', this.menu);
