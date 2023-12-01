@@ -6,9 +6,8 @@ import {NgbModal, NgbPagination} from '@ng-bootstrap/ng-bootstrap';
 import {Subject} from 'rxjs';
 import {UsuariosService} from '../usuarios.service';
 
-import {compararPassword, Usuario} from '../models/usuarios';
+import {Usuario} from '../models/usuarios';
 import {RolesService} from '../../roles/roles.service';
-// import {Empresa} from '../../empresas/models/empresas';
 import {FlatpickrOptions} from 'ng2-flatpickr';
 import {ParametrizacionesService} from '../../parametrizaciones/parametrizaciones.service';
 
@@ -39,12 +38,10 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('eliminarUsuarioMdl') eliminarUsuarioMdl;
     public page = 1;
     public page_size: any = 10;
-    public maxSize;
     public collectionSize;
     public listaUsuarios;
     public listaRoles;
     public listaEmpresas;
-    public listaCargos;
     public usuario: Usuario;
     private _unsubscribeAll: Subject<any>;
     public idUsuario;
@@ -142,17 +139,6 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    obtenerListaEmpresas() {
-        this._usuariosService.obtenerListaEmpresas({
-            ruc: this.ruc
-        }).subscribe((info) => {
-                this.listaEmpresas = info.info;
-            },
-            (error) => {
-
-            });
-    }
-
     cambiarTipoUsuario() {
         this._usuariosService.obtenerEmpresa(this.usuario.empresa).subscribe((info) => {
             this.tipoUsuario = info.tipoEmpresa;
@@ -184,7 +170,7 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.cambiarTipoUsuario();
                     }
                     if (info.roles.length) {
-                        this.usuario.roles = info.roles[0]._id;
+                        this.usuario.roles = info.roles[0].nombre;
                     }
                 },
                 (error) => {
@@ -225,7 +211,7 @@ export class ListarComponent implements OnInit, AfterViewInit, OnDestroy {
         } else {
             this._usuariosService.actualizarUsuario({
                 ...this.usuario,
-                tipoUsuario: this.tipoUsuario,
+                tipoUsuario: 'credit',
                 fechaNacimiento: this.transformarFecha(this.usuario.fechaNacimiento)
             }).subscribe((info) => {
                 this.mensaje = 'Usuario actualizado correctamente';
