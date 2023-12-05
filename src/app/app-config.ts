@@ -16,8 +16,8 @@ import { CoreConfig } from '@core/types';
 // prettier-ignore
 export const coreConfig: CoreConfig = {
   app: {
-    appName     : 'Global RedPyme',                                        // App Name
-    appTitle    : 'GRP Credit', // App Title
+    appName     : 'Todo mega centro',                                        // App Name
+    appTitle    : 'Todo mega centro', // App Title
     appLogoImage: 'assets/images/logo/logo.png',                  // App Logo
   },
   layout: {
